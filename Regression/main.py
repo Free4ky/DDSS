@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 from tqdm import tqdm
 matplotlib.use('Qt5Agg')
 
+
 def one_hot(y, num_classes):
     y_full = np.zeros((len(y), num_classes)).astype(int)
     for j, yj in enumerate(y):
@@ -64,6 +65,7 @@ class Regression(ABC):
             batch_number = np.random.randint(len(batches_indices))
             batch_x = X[batches_indices[batch_number]]
             batch_y = y[batches_indices[batch_number]]
+
 
             outputs = self.forward(batch_x)
             running_loss = self.loss(outputs, batch_y)
@@ -172,28 +174,28 @@ if __name__ == '__main__':
     # plt.plot(x, y, 'o')
     # plt.show()
 
-    X, y = datasets.make_regression(n_samples=100, n_features=1, noise=20, random_state=4)
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1243)
-    linreg = LinearRegression()
-    history = linreg.fit(X, y, epochs=1000, batch_size=10, lr=1e-3)
-    preds = linreg.predict(X_test)
-    r_determ, r_corr = calculate_metrics(X_test, y_test, preds)
-    print(f'Коэффициент детерминации: {r_determ}\nКоэффициент корреляции: {r_corr}')
-    fig, axes = plt.subplots(1, 2, figsize=(16, 12))
-    axes[0].scatter(X_test, y_test, s=10)
-    axes[0].plot(X_test, preds, color='black', linewidth=2)
-    axes[0].set_title('Test result')
-    axes[1].plot(history)
-    axes[1].set_title('MSE loss')
-    plt.show()
-
-    # dataset = datasets.load_iris()
-    # X, y = dataset.data, dataset.target
+    # X, y = datasets.make_regression(n_samples=100, n_features=1, noise=20, random_state=4)
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1243)
-    # logreg = LogisticRegression()
-    # history = logreg.fit(X_train, y_train, epochs=int(1e5), batch_size=20, lr=1e-3)
-    # preds = logreg.predict(X_test)
-    # print(accuracy(preds, y_test))
-    # print(len(history))
-    # plt.plot(history)
+    # linreg = LinearRegression()
+    # history = linreg.fit(X, y, epochs=1000, batch_size=10, lr=1e-3)
+    # preds = linreg.predict(X_test)
+    # r_determ, r_corr = calculate_metrics(X_test, y_test, preds)
+    # print(f'Коэффициент детерминации: {r_determ}\nКоэффициент корреляции: {r_corr}')
+    # fig, axes = plt.subplots(1, 2, figsize=(16, 12))
+    # axes[0].scatter(X_test, y_test, s=10)
+    # axes[0].plot(X_test, preds, color='black', linewidth=2)
+    # axes[0].set_title('Test result')
+    # axes[1].plot(history)
+    # axes[1].set_title('MSE loss')
     # plt.show()
+
+    dataset = datasets.load_iris()
+    X, y = dataset.data, dataset.target
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1243)
+    logreg = LogisticRegression()
+    history = logreg.fit(X_train, y_train, epochs=1600, batch_size=20, lr=1e-3)
+    preds = logreg.predict(X_test)
+    print(accuracy(preds, y_test))
+    print(len(history))
+    plt.plot(history)
+    plt.show()
