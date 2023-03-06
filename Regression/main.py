@@ -5,6 +5,8 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from abc import ABC, abstractmethod
 from tqdm import tqdm
+import pandas as pd
+
 matplotlib.use('Qt5Agg')
 
 
@@ -65,7 +67,6 @@ class Regression(ABC):
             batch_number = np.random.randint(len(batches_indices))
             batch_x = X[batches_indices[batch_number]]
             batch_y = y[batches_indices[batch_number]]
-
 
             outputs = self.forward(batch_x)
             running_loss = self.loss(outputs, batch_y)
@@ -193,9 +194,20 @@ if __name__ == '__main__':
     X, y = dataset.data, dataset.target
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1243)
     logreg = LogisticRegression()
-    history = logreg.fit(X_train, y_train, epochs=1600, batch_size=20, lr=1e-3)
-    preds = logreg.predict(X_test)
-    print(accuracy(preds, y_test))
-    print(len(history))
-    plt.plot(history)
+    history = logreg.fit(X_train, y_train, epochs=4500, batch_size=20, lr=1e-3)
+    y_pred = logreg.predict(X_test)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_title('Loss')
+    ax.set_ylabel('CEL')
+    ax.set_xlabel('Epoch')
+    res_df = pd.DataFrame(
+        data=np.c_[X_test, y_test, y_pred],
+        columns=dataset.feature_names + ['target', 'prediction']
+    )
+    res_df.target = res_df.target.astype(int)
+    res_df.prediction = res_df.prediction.astype(int)
+    print(f"Accuracy: {accuracy(y_test, y_pred)}")
+    print(res_df)
+    ax.plot(history)
     plt.show()

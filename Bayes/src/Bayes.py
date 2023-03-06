@@ -1,5 +1,5 @@
-
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
 
@@ -36,6 +36,8 @@ class NaiveBayes:
             posterior = posterior + prior
             posteriors.append(posterior)
 
+            # print(posterior)
+
         # return class with the highest posterior
         return self._classes[np.argmax(posteriors)]
 
@@ -62,5 +64,11 @@ if __name__ == '__main__':
     naive_byes.fit(X_train, y_train)
 
     y_pred = naive_byes.predict(X_test)
-
-    print(accuracy(y_test, y_pred))
+    res_df = pd.DataFrame(
+        data=np.c_[X_test, y_test, y_pred],
+        columns=dataset.feature_names + ['target', 'prediction']
+    )
+    res_df.target = res_df.target.astype(int)
+    res_df.prediction = res_df.prediction.astype(int)
+    print(f"Accuracy: {accuracy(y_test, y_pred)}")
+    print(res_df)

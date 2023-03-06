@@ -2,7 +2,7 @@ import numpy as np
 from collections import Counter
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
-
+import pandas as pd
 
 class Node:
     def __init__(
@@ -159,5 +159,13 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1243)
     decision_tree = DecsisionTree()
     decision_tree.fit(X_train, y_train)
-    preds = decision_tree.predict(X_test)
-    print(accuracy(preds, y_test))
+    y_pred = decision_tree.predict(X_test)
+
+    res_df = pd.DataFrame(
+        data=np.c_[X_test, y_test, y_pred],
+        columns=dataset.feature_names + ['target', 'prediction']
+    )
+    res_df.target = res_df.target.astype(int)
+    res_df.prediction = res_df.prediction.astype(int)
+    print(f"Accuracy: {accuracy(y_test, y_pred)}")
+    print(res_df)
