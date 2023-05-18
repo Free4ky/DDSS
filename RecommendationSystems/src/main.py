@@ -30,13 +30,24 @@ def pearsonr(X):
     return res
 
 
+def jacquard(X, axis=0):
+    m = X.shape[axis]
+    n = X.shape[abs(int(axis - 1))]
+    res = np.eye(m)
+    for i in range(m - 1):
+        for j in range(i + 1, m):
+            res[i][j] = np.sum(X[:, i] == X[:, j]) / n
+            res[j][i] = res[i][j]
+
+    return res
+
+
 if __name__ == '__main__':
     df = pd.read_csv('../data/movies_ratings.csv')
+    df_dummies = pd.read_csv('../data/movies.csv')
     # columns_dict = dict(zip(range(len(df.columns)), df.columns))
     # print(columns_dict)
-    r = cosine_similarity(df.values)
+    # r = cosine_similarity(df.values)
+    # print(r)
+    r = jacquard(df_dummies.values, axis=0)
     print(r)
-    # fig = ff.create_annotated_heatmap(
-    #     r,
-    #     colorscale='Viridis')
-    # fig.show()
